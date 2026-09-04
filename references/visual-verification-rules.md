@@ -13,6 +13,7 @@
 3. Agent 没有看图能力，不得成为跳过截图的理由。
 4. 只有项目本身不存在可视界面，或经过规定的运行与回退尝试后仍客观无法渲染，才允许没有截图。
 5. 视觉验证不得修改目标项目源码，不得为了“让它跑起来”而开发或修复项目。
+6. 截图实际使用的 `screenshot_scale` 必须与 TODO-00 中用户确认的机器级配置完全一致。
 
 ## 机器级截图配置
 
@@ -129,7 +130,7 @@
 - 截图文件真实存在
 - 文件大小合理
 - PNG 尺寸合理
-- `screenshot_scale` 与机器配置一致
+- manifest 中的 `screenshot_scale` 与 TODO-00 机器配置完全一致
 - Markdown 最终引用截图文件
 - `visual-evidence.json` 存在
 
@@ -253,7 +254,10 @@ TODO-10 完成前必须执行：
 python scripts/validate_visual_evidence.py \
   "<visual-evidence.json>" \
   --screenshot-root "<screenshot_root>" \
+  --expected-scale "<screenshot_scale>" \
   --report "<报告路径>"
 ```
+
+其中 `--expected-scale` 必须直接读取机器级配置，不能由 Agent 临时选择。
 
 只有 exit code `0` 才能继续最终报告验收。
