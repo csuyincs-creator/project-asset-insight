@@ -8,10 +8,12 @@ from pathlib import Path
 
 APP_DIR = Path.home() / ".project-asset-insight"
 CONFIG_PATH = APP_DIR / "config.json"
+SCHEMA_VERSION = "1.1"
+REQUIRED_FIELDS = ("output_root", "screenshot_root", "screenshot_scale")
 
 
 def is_absolute_path(p: str) -> bool:
-    # Support both native absolute paths and Windows drive paths when invoked in mixed environments.
+    # Support native absolute paths and Windows drive paths in mixed environments.
     return os.path.isabs(p) or (len(p) >= 3 and p[1] == ":" and p[2] in ("\\", "/"))
 
 
@@ -24,18 +26,58 @@ def load_config():
         raise SystemExit(f"CONFIG_ERROR: cannot read {CONFIG_PATH}: {exc}")
 
 
-def validate_output_root(path_str: str):
+def validate_path(name: str, path_str: str):
     if not path_str or not is_absolute_path(path_str):
-        raise SystemExit("CONFIG_ERROR: output_root must be an absolute path")
+        raise SystemExit(f"CONFIG_ERROR: {name} must be an absolute path")
 
 
-def save_config(output_root: str):
-    validate_output_root(output_root)
+def validate_scale(value) -> float:
+    try:
+        scale = float(value)
+    except (TypeError, ValueError):
+        raise SystemExit("CONFIG_ERROR: screenshot_scale must be a number")
+    if not 0.5 <= scale <= 4.0:
+        raise SystemExit("CONFIG_ERROR: screenshot_scale must be between 0.5 and 4.0")
+    return scale
+
+
+def missing_fields(cfg):
+    if not cfg:
+        return list(REQUIRED_FIELDS)
+    missing = []
+    for field in REQUIRED_FIELDS:
+        if cfg.get(field) in (None, ""):
+            missing.append(field)
+    return missing
+
+
+def validate_complete_config(cfg):
+    missing = missing_fields(cfg)
+    if missing:
+        raise SystemExit(
+            "CONFIG_INCOMPLETE: ask the user for the missing machine-level settings first: "
+            + ", ".join(missing)
+        )
+    validate_path("output_root", str(cfg["output_root"]))
+    validate_path("screenshot_root", str(cfg["screenshot_root"]))
+    validate_scale(cfg["screenshot_scale"])
+
+
+def save_config(output_root: str, screenshot_root: str, screenshot_scale) -> dict:
+    validate_path("output_root", output_root)
+    validate_path("screenshot_root", screenshot_root)
+    scale = validate_scale(screenshot_scale)
+
     APP_DIR.mkdir(parents=True, exist_ok=True)
+    old = load_config() or {}
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     data = {
-        "schema_version": "1.0",
+        "schema_version": SCHEMA_VERSION,
         "output_root": output_root,
-        "initialized_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "screenshot_root": screenshot_root,
+        "screenshot_scale": scale,
+        "initialized_at": old.get("initialized_at", now),
+        "updated_at": now,
         "host": socket.gethostname(),
     }
     CONFIG_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -47,30 +89,57 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("status")
+
     p_set = sub.add_parser("set")
     p_set.add_argument("output_root")
-    sub.add_parser("get")
+    p_set.add_argument("--screenshot-root", required=True)
+    p_set.add_argument("--screenshot-scale", required=True, type=float)
+
+    p_get = sub.add_parser("get")
+    p_get.add_argument(
+        "--field",
+        choices=["all", "output_root", "screenshot_root", "screenshot_scale"],
+        default="all",
+    )
 
     args = ap.parse_args()
 
     if args.cmd == "status":
         cfg = load_config()
         if not cfg:
-            print(json.dumps({"initialized": False, "config_path": str(CONFIG_PATH)}, ensure_ascii=False))
+            print(json.dumps({
+                "initialized": False,
+                "complete": False,
+                "missing_fields": list(REQUIRED_FIELDS),
+                "config_path": str(CONFIG_PATH),
+            }, ensure_ascii=False))
             return
-        print(json.dumps({"initialized": True, "config_path": str(CONFIG_PATH), **cfg}, ensure_ascii=False))
+        missing = missing_fields(cfg)
+        print(json.dumps({
+            "initialized": True,
+            "complete": not missing,
+            "missing_fields": missing,
+            "config_path": str(CONFIG_PATH),
+            **cfg,
+        }, ensure_ascii=False))
         return
 
     if args.cmd == "set":
-        print(json.dumps(save_config(args.output_root), ensure_ascii=False, indent=2))
+        data = save_config(args.output_root, args.screenshot_root, args.screenshot_scale)
+        print(json.dumps(data, ensure_ascii=False, indent=2))
         return
 
     if args.cmd == "get":
         cfg = load_config()
         if not cfg:
-            raise SystemExit("CONFIG_MISSING: ask the user for this machine's output root first")
-        validate_output_root(str(cfg.get("output_root", "")))
-        print(cfg["output_root"])
+            raise SystemExit(
+                "CONFIG_MISSING: ask the user for output_root, screenshot_root, and screenshot_scale first"
+            )
+        validate_complete_config(cfg)
+        if args.field == "all":
+            print(json.dumps(cfg, ensure_ascii=False, indent=2))
+        else:
+            print(cfg[args.field])
 
 
 if __name__ == "__main__":
