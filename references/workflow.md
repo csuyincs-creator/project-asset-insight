@@ -20,11 +20,11 @@
 - 若旧配置仅有 `output_root`：只询问缺失的 `screenshot_root` 与 `screenshot_scale`。
 - `screenshot_root` 可以与 `output_root` 相同，但必须由用户明确选择，不得静默默认。
 - `screenshot_scale` 常见值可提示 `1 / 1.5 / 2 / 3`，但不得替用户选择。
-- 校验路径格式。
+- 校验路径格式与 scale 范围。
 - 必要时创建目录。
 - 保存 config.json。
-- 若配置存在且完整：直接读取，不得重复询问。
-- 若任一路径失效：要求用户重新指定，不得自动换目录。
+- 若配置存在且完整有效：直接读取，不得重复询问。
+- 若任一路径失效或 scale 非法：要求用户重新指定，不得自动替换。
 
 完成条件：得到有效的 `output_root`、`screenshot_root`、`screenshot_scale`。
 
@@ -169,6 +169,8 @@ python scripts/capture_visual.py \
 
 生成或补全 `visual-evidence.json`，记录截图状态、截图列表、scale、viewport、运行信息等。
 
+机器级校验必须把 manifest 中的 `screenshot_scale` 与 TODO-00 机器配置里的 `screenshot_scale` 逐值核对，禁止 Agent 临时改倍率。
+
 ### TODO-09D｜视觉语义复核
 
 - Agent 有视觉能力：必须重新查看截图并做视觉检查，`review_status=VISION_REVIEWED`。
@@ -199,6 +201,7 @@ python scripts/capture_visual.py \
 python scripts/validate_visual_evidence.py \
   "<visual-evidence.json>" \
   --screenshot-root "<screenshot_root>" \
+  --expected-scale "<screenshot_scale>" \
   --report "<报告路径>"
 ```
 
