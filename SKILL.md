@@ -131,9 +131,10 @@ Agent 必须：
 1. 实际尝试打开可视界面。
 2. 生成至少一张截图。
 3. 生成或补全 `visual-evidence.json`。
-4. 运行机器级视觉证据校验。
-5. 若 Agent 有视觉理解能力，重新查看截图并完成语义复核。
-6. 若 Agent 没有视觉理解能力，仍然保留截图与机器校验，并标记 `VISION_UNAVAILABLE`。
+4. 使用 TODO-00 中用户确认的 `screenshot_scale`。
+5. 运行机器级视觉证据校验，并验证 manifest 中实际 scale 与机器配置完全一致。
+6. 若 Agent 有视觉理解能力，重新查看截图并完成语义复核。
+7. 若 Agent 没有视觉理解能力，仍然保留截图与机器校验，并标记 `VISION_UNAVAILABLE`。
 
 Agent 没有浏览器、没有截图工具、没有看图能力，都不能单独成为跳过截图的理由。
 
@@ -156,8 +157,11 @@ Agent 没有浏览器、没有截图工具、没有看图能力，都不能单�
 python scripts/validate_visual_evidence.py \
   "<visual-evidence.json>" \
   --screenshot-root "<screenshot_root>" \
+  --expected-scale "<screenshot_scale>" \
   --report "<报告路径>"
 ```
+
+其中 `--expected-scale` 必须来自机器级配置，不能由 Agent 临时指定其他值。
 
 只有视觉证据验证 exit code 0 后，才能执行：
 
