@@ -272,12 +272,13 @@ python scripts/capture_visual.py \
 
 ## Completion Gate
 
-先验证视觉证据：
+先验证视觉证据，并强制把实际 manifest scale 与机器级配置 scale 对比：
 
 ```bash
 python scripts/validate_visual_evidence.py \
   "<visual-evidence.json>" \
   --screenshot-root "<screenshot_root>" \
+  --expected-scale "<screenshot_scale>" \
   --report "<报告路径>"
 ```
 
