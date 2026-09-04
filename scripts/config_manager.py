@@ -51,12 +51,36 @@ def missing_fields(cfg):
     return missing
 
 
+def invalid_fields(cfg):
+    if not cfg:
+        return []
+    invalid = []
+    if cfg.get("output_root") not in (None, "") and not is_absolute_path(str(cfg.get("output_root"))):
+        invalid.append("output_root")
+    if cfg.get("screenshot_root") not in (None, "") and not is_absolute_path(str(cfg.get("screenshot_root"))):
+        invalid.append("screenshot_root")
+    if cfg.get("screenshot_scale") not in (None, ""):
+        try:
+            scale = float(cfg.get("screenshot_scale"))
+            if not 0.5 <= scale <= 4.0:
+                invalid.append("screenshot_scale")
+        except (TypeError, ValueError):
+            invalid.append("screenshot_scale")
+    return invalid
+
+
 def validate_complete_config(cfg):
     missing = missing_fields(cfg)
     if missing:
         raise SystemExit(
             "CONFIG_INCOMPLETE: ask the user for the missing machine-level settings first: "
             + ", ".join(missing)
+        )
+    invalid = invalid_fields(cfg)
+    if invalid:
+        raise SystemExit(
+            "CONFIG_INVALID: ask the user to correct these machine-level settings: "
+            + ", ".join(invalid)
         )
     validate_path("output_root", str(cfg["output_root"]))
     validate_path("screenshot_root", str(cfg["screenshot_root"]))
@@ -111,14 +135,17 @@ def main():
                 "initialized": False,
                 "complete": False,
                 "missing_fields": list(REQUIRED_FIELDS),
+                "invalid_fields": [],
                 "config_path": str(CONFIG_PATH),
             }, ensure_ascii=False))
             return
         missing = missing_fields(cfg)
+        invalid = invalid_fields(cfg)
         print(json.dumps({
             "initialized": True,
-            "complete": not missing,
+            "complete": not missing and not invalid,
             "missing_fields": missing,
+            "invalid_fields": invalid,
             "config_path": str(CONFIG_PATH),
             **cfg,
         }, ensure_ascii=False))
