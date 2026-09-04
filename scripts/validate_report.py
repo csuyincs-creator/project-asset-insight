@@ -9,6 +9,7 @@ from pathlib import Path
 REQUIRED_META = [
     "编写来源", "编写主机", "文档初次编写时间", "文档版本号", "项目名称",
     "项目地址", "项目来源", "项目网址", "项目类型", "本地接触程度", "核心价值标签",
+    "截图资产目录", "截图倍率", "视觉验证状态",
 ]
 
 REQUIRED_SECTIONS = [
@@ -44,6 +45,11 @@ def norm(p: str) -> str:
     return os.path.normcase(os.path.abspath(p))
 
 
+def metadata_value(text: str, field: str):
+    m = re.search(rf"^\|\s*{re.escape(field)}\s*\|\s*(.*?)\s*\|\s*$", text, re.MULTILINE)
+    return m.group(1).strip() if m else None
+
+
 def validate(report: Path, output_root: str | None, project_path: str | None, visual_evidence: Path):
     errors = []
     warnings = []
@@ -56,11 +62,10 @@ def validate(report: Path, output_root: str | None, project_path: str | None, vi
         errors.append("report is too short (<1000 characters)")
 
     for field in REQUIRED_META:
-        m = re.search(rf"^\|\s*{re.escape(field)}\s*\|\s*(.*?)\s*\|\s*$", text, re.MULTILINE)
-        if not m:
+        value = metadata_value(text, field)
+        if value is None:
             errors.append(f"missing metadata field: {field}")
             continue
-        value = m.group(1).strip()
         if not value:
             errors.append(f"empty metadata field: {field}")
         if value in BANNED_META_VALUES:
@@ -106,10 +111,26 @@ def validate(report: Path, output_root: str | None, project_path: str | None, vi
         try:
             manifest = json.loads(visual_evidence.read_text(encoding="utf-8"))
             status = manifest.get("capture_status")
+            scale = manifest.get("screenshot_scale")
             if status not in ALLOWED_CAPTURE:
                 errors.append(f"invalid visual capture status: {status}")
-            elif status not in text:
-                errors.append(f"report does not state visual capture status: {status}")
+            else:
+                if status not in text:
+                    errors.append(f"report does not state visual capture status: {status}")
+                meta_status = metadata_value(text, "视觉验证状态")
+                if meta_status != status:
+                    errors.append(f"visual status metadata mismatch: report={meta_status}, manifest={status}")
+            if status == "CAPTURED":
+                meta_scale = metadata_value(text, "截图倍率")
+                try:
+                    if abs(float(meta_scale) - float(scale)) > 1e-9:
+                        errors.append(f"screenshot scale metadata mismatch: report={meta_scale}, manifest={scale}")
+                except Exception:
+                    errors.append("CAPTURED report screenshot scale is not numeric or manifest scale missing")
+                asset_dir = str(manifest.get("asset_dir", "")).strip()
+                meta_asset_dir = metadata_value(text, "截图资产目录") or ""
+                if asset_dir and asset_dir not in meta_asset_dir and meta_asset_dir not in asset_dir:
+                    warnings.append("screenshot asset directory metadata differs from manifest asset_dir")
         except Exception as exc:
             errors.append(f"invalid visual evidence manifest: {exc}")
 
