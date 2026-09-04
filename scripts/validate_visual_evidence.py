@@ -36,7 +36,7 @@ def resolve_shot(manifest_path: Path, item):
     return manifest_path.parent / p
 
 
-def validate(manifest_path: Path, screenshot_root=None, report_path=None):
+def validate(manifest_path: Path, screenshot_root=None, expected_scale=None, report_path=None):
     errors = []
     warnings = []
 
@@ -59,12 +59,27 @@ def validate(manifest_path: Path, screenshot_root=None, report_path=None):
     if level not in ALLOWED_LEVELS:
         errors.append(f"invalid verification_level: {level}")
 
-    scale = data.get("screenshot_scale")
+    manifest_scale = data.get("screenshot_scale")
+    if expected_scale is not None:
+        try:
+            expected_scale_num = float(expected_scale)
+            if not 0.5 <= expected_scale_num <= 4.0:
+                errors.append("expected screenshot scale must be between 0.5 and 4.0")
+        except (TypeError, ValueError):
+            expected_scale_num = None
+            errors.append("expected screenshot scale must be numeric")
+    else:
+        expected_scale_num = None
+
     if capture_status == "CAPTURED":
         try:
-            scale_num = float(scale)
+            scale_num = float(manifest_scale)
             if not 0.5 <= scale_num <= 4.0:
                 errors.append("screenshot_scale must be between 0.5 and 4.0")
+            if expected_scale_num is not None and abs(scale_num - expected_scale_num) > 1e-9:
+                errors.append(
+                    f"screenshot_scale does not match machine config: manifest={scale_num}, expected={expected_scale_num}"
+                )
         except (TypeError, ValueError):
             errors.append("CAPTURED evidence requires numeric screenshot_scale")
 
@@ -147,12 +162,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("manifest")
     ap.add_argument("--screenshot-root")
+    ap.add_argument("--expected-scale", required=True, type=float)
     ap.add_argument("--report")
     args = ap.parse_args()
 
     manifest = Path(args.manifest)
     report = Path(args.report) if args.report else None
-    errors, warnings = validate(manifest, args.screenshot_root, report)
+    errors, warnings = validate(manifest, args.screenshot_root, args.expected_scale, report)
 
     for warning in warnings:
         print(f"WARNING: {warning}")
