@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import os
 import re
 import sys
@@ -21,7 +22,8 @@ REQUIRED_SECTIONS = [
     "## 08｜什么时候值得重新打开它",
     "## 09｜15 分钟重新理解路线",
     "## 10｜哪些地方不用继续浪费时间",
-    "## 11｜最终资产结论",
+    "## 11｜真实运行与视觉验证",
+    "## 12｜最终资产结论",
 ]
 
 PLACEHOLDERS = [
@@ -34,14 +36,15 @@ BANNED_META_VALUES = {
     "仅收藏 / 已阅读 / 深入研究 / 已使用",
 }
 
-RUN_WORDS = ["测试", "安装", "构建", "报错", "修复", "启动失败", "依赖问题", "pytest", "npm run"]
+RUN_WORDS = ["安装", "构建", "报错", "修复", "启动失败", "依赖问题", "pytest", "npm run"]
+ALLOWED_CAPTURE = {"CAPTURED", "NO_VISUAL_SURFACE", "CAPTURE_BLOCKED"}
 
 
 def norm(p: str) -> str:
     return os.path.normcase(os.path.abspath(p))
 
 
-def validate(report: Path, output_root: str | None, project_path: str | None):
+def validate(report: Path, output_root: str | None, project_path: str | None, visual_evidence: Path):
     errors = []
     warnings = []
 
@@ -74,12 +77,10 @@ def validate(report: Path, output_root: str | None, project_path: str | None):
     if project_path:
         if not os.path.exists(project_path):
             errors.append(f"project path does not exist: {project_path}")
-        # Report should mention project path or an equivalent literal.
         if project_path not in text:
             warnings.append("project path argument is not found literally in report text")
 
     if output_root:
-        # Only enforce full path relation on the current OS when both are natively resolvable.
         try:
             if os.path.isabs(output_root) and os.path.isabs(str(report)):
                 if not norm(str(report)).startswith(norm(output_root)):
@@ -90,16 +91,27 @@ def validate(report: Path, output_root: str | None, project_path: str | None):
     if not re.search(r"[A-Za-z0-9_.-]+[\\/][A-Za-z0-9_./\\-]+", text):
         errors.append("no evidence path detected in report")
 
-    # Heuristic drift warning only.
     run_hits = sum(text.count(w) for w in RUN_WORDS)
-    if run_hits >= 18:
-        warnings.append("运行/测试/故障相关词出现较多，请确认报告是否偏离项目资产解读目标")
+    if run_hits >= 24:
+        warnings.append("运行/故障相关词出现较多，请确认报告是否偏离项目资产解读目标")
 
-    # filename check: YYYY-MM-DD-项目名-一句话总结-项目资产解读.md
     if not re.match(r"^\d{4}-\d{2}-\d{2}-.+?-项目资产解读\.md$", report.name):
         errors.append("filename must match: YYYY-MM-DD-<project>-<summary>-项目资产解读.md")
     if not re.fullmatch(r"\d{4}-\d{2}", report.parent.name):
         errors.append("parent directory must be YYYY-MM")
+
+    if not visual_evidence.exists() or not visual_evidence.is_file():
+        errors.append(f"visual evidence manifest not found: {visual_evidence}")
+    else:
+        try:
+            manifest = json.loads(visual_evidence.read_text(encoding="utf-8"))
+            status = manifest.get("capture_status")
+            if status not in ALLOWED_CAPTURE:
+                errors.append(f"invalid visual capture status: {status}")
+            elif status not in text:
+                errors.append(f"report does not state visual capture status: {status}")
+        except Exception as exc:
+            errors.append(f"invalid visual evidence manifest: {exc}")
 
     return errors, warnings
 
@@ -109,9 +121,15 @@ def main():
     ap.add_argument("report")
     ap.add_argument("--output-root")
     ap.add_argument("--project-path")
+    ap.add_argument("--visual-evidence", required=True)
     args = ap.parse_args()
 
-    errors, warnings = validate(Path(args.report), args.output_root, args.project_path)
+    errors, warnings = validate(
+        Path(args.report),
+        args.output_root,
+        args.project_path,
+        Path(args.visual_evidence),
+    )
 
     for w in warnings:
         print(f"WARNING: {w}")
