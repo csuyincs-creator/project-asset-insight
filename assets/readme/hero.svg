@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="pi-title pi-desc">
+  <title id="pi-title">project-asset-insight · 项目资产解读器</title>
+  <desc id="pi-desc">project-asset-insight: an agent skill that produces a structured re-entry guide for any project, with a TODO-00 to TODO-10 workflow, mandatory screenshots as visual evidence, and dual validators.</desc>
+  <defs>
+    <linearGradient id="bg-g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0e12"/>
+      <stop offset="100%" stop-color="#090c10"/>
+    </linearGradient>
+  </defs>
+  <rect id="frame" width="1200" height="360" rx="26" fill="url(#bg-g)"/>
+  <g id="pipeline"><circle cx="712" cy="44" r="7" fill="#5a6a76" fill-opacity="0.55"/><text x="730" y="42" font-family="Consolas, ui-monospace, monospace" font-size="14" fill="#5a6a76">TODO-00</text><text x="730" y="60" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="14" fill="#e8edf2" fill-opacity="0.62">本机配置</text><line x1="712" y1="53" x2="712" y2="87" stroke="#3a4750" stroke-width="1.6"/><circle cx="712" cy="96" r="7" fill="#5a6a76" fill-opacity="0.55"/><text x="730" y="94" font-family="Consolas, ui-monospace, monospace" font-size="14" fill="#5a6a76">TODO-02</text><text x="730" y="112" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="14" fill="#e8edf2" fill-opacity="0.62">项目地图</text><line x1="712" y1="105" x2="712" y2="139" stroke="#3a4750" stroke-width="1.6"/><circle cx="712" cy="148" r="7" fill="#5a6a76" fill-opacity="0.55"/><text x="730" y="146" font-family="Consolas, ui-monospace, monospace" font-size="14" fill="#5a6a76">TODO-04</text><text x="730" y="164" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="14" fill="#e8edf2" fill-opacity="0.62">架构理解</text><line x1="712" y1="157" x2="712" y2="191" stroke="#3a4750" stroke-width="1.6"/><circle cx="712" cy="200" r="7" fill="#5a6a76" fill-opacity="0.55"/><text x="730" y="198" font-family="Consolas, ui-monospace, monospace" font-size="14" fill="#5a6a76">TODO-06</text><text x="730" y="216" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="14" fill="#e8edf2" fill-opacity="0.62">可复用资产</text><line x1="712" y1="209" x2="712" y2="243" stroke="#3a4750" stroke-width="1.6"/><circle cx="712" cy="252" r="7" fill="#4cc38a" fill-opacity="0.95"/><text x="730" y="250" font-family="Consolas, ui-monospace, monospace" font-size="14" fill="#4cc38a">TODO-09</text><text x="730" y="268" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="14" fill="#e8edf2" fill-opacity="0.9">强制截图</text><line x1="712" y1="261" x2="712" y2="295" stroke="#3a4750" stroke-width="1.6"/><circle cx="712" cy="304" r="7" fill="#4cc38a" fill-opacity="0.95"/><text x="730" y="302" font-family="Consolas, ui-monospace, monospace" font-size="14" fill="#4cc38a">TODO-10</text><text x="730" y="320" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif" font-size="14" fill="#e8edf2" fill-opacity="0.9">双校验报告</text></g>
+  <g id="evidence-frame" transform="translate(838 40)">
+    <rect width="314" height="204" rx="14" fill="#10151b" stroke="#2c3844"/>
+    <circle cx="22" cy="20" r="4.5" fill="#e06c5f"/>
+    <circle cx="38" cy="20" r="4.5" fill="#e0b458"/>
+    <circle cx="54" cy="20" r="4.5" fill="#4cc38a"/>
+    <rect x="70" y="13" width="228" height="14" rx="7" fill="#1a212a"/>
+    <text x="80" y="23" font-family="Consolas, ui-monospace, monospace" font-size="10" fill="#8b98a5">127.0.0.1:5173</text>
+  </g>
+  <g id="shot" transform="translate(838 40)">
+    <clipPath id="shot-clip"><rect x="8" y="34" width="298" height="162" rx="8"/></clipPath>
+    <g clip-path="url(#shot-clip)">
+      <rect x="8" y="34" width="298" height="162" fill="#0d1117"/>
+      <rect x="8" y="34" width="64" height="162" fill="#151b23"/>
+      <rect x="18" y="48" width="42" height="6" rx="3" fill="#4cc38a" fill-opacity="0.8"/>
+      <rect x="18" y="62" width="36" height="5" rx="2.5" fill="#8b98a5" fill-opacity="0.5"/>
+      <rect x="18" y="74" width="40" height="5" rx="2.5" fill="#8b98a5" fill-opacity="0.35"/>
+      <rect x="84" y="48" width="66" height="44" rx="7" fill="#151b23" stroke="#2c3844"/>
+      <rect x="160" y="48" width="66" height="44" rx="7" fill="#151b23" stroke="#2c3844"/>
+      <rect x="236" y="48" width="62" height="44" rx="7" fill="#151b23" stroke="#2c3844"/>
+      <rect x="92" y="58" width="28" height="10" rx="3" fill="#e0a458" fill-opacity="0.85"/>
+      <rect x="168" y="58" width="28" height="10" rx="3" fill="#4cc38a" fill-opacity="0.85"/>
+      <rect x="244" y="58" width="24" height="10" rx="3" fill="#5ba7ff" fill-opacity="0.85"/>
+      <rect x="84" y="104" width="214" height="84" rx="7" fill="#151b23" stroke="#2c3844"/>
+      <polyline points="94,176 124,160 154,166 184,144 214,150 244,130 274,136 288,124" fill="none" stroke="#4cc38a" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g id="status-chips" transform="translate(838 262)" font-family="Consolas, ui-monospace, monospace">
+      <rect x="0" y="0" width="104" height="26" rx="13" fill="#4cc38a" fill-opacity="0.14" stroke="#4cc38a" stroke-opacity="0.55"/>
+      <text x="14" y="17" font-size="12" fill="#4cc38a">CAPTURED</text>
+      <rect x="114" y="0" width="112" height="26" rx="13" fill="#e0a458" fill-opacity="0.12" stroke="#e0a458" stroke-opacity="0.5"/>
+      <text x="128" y="17" font-size="12" fill="#e0a458">L2 VERIFIED</text>
+      <rect x="236" y="0" width="78" height="26" rx="13" fill="#5ba7ff" fill-opacity="0.12" stroke="#5ba7ff" stroke-opacity="0.5"/>
+      <text x="248" y="17" font-size="12" fill="#7fc0ff">REVIEWED</text>
+      <text x="0" y="52" font-size="12" fill="#8b98a5">01-overview.png &#183; visual-evidence.json</text>
+    </g>
+  <g id="title-block" transform="translate(64 0)" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, PingFang SC, sans-serif">
+    <text x="0" y="88" font-family="Consolas, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17" letter-spacing="2.5" fill="#4cc38a">AGENT SKILL &#183; VISUAL EVIDENCE &#183; V1.1.0</text>
+    <text x="0" y="154" font-size="60" font-weight="800" fill="#e8edf2">项目资产解读器</text>
+    <text x="2" y="196" font-family="Consolas, ui-monospace, monospace" font-size="17" fill="#8b98a5">project-asset-insight</text>
+    <text x="2" y="238" font-size="21" fill="#b6c2cc">给项目写一份「未来自己还能读懂」的快速重入指南</text>
+    <g fill="#cfe4d8">
+      <g transform="translate(0 282)"><rect width="212" height="38" rx="10" fill="#4cc38a" fill-opacity="0.08" stroke="#4cc38a" stroke-opacity="0.4"/><text x="15" y="25" font-size="16">强制截图 &#183; L0&#65374;L3 分级</text></g>
+      <g transform="translate(226 282)"><rect width="196" height="38" rx="10" fill="#4cc38a" fill-opacity="0.08" stroke="#4cc38a" stroke-opacity="0.4"/><text x="15" y="25" font-size="16">双 Validator 收尾</text></g>
+    </g>
+  </g>
+</svg>

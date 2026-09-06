@@ -1,0 +1,17 @@
+{
+  "width": 1200,
+  "fps": 30,
+  "duration": 6.0,
+  "colors": 256,
+  "dither": "none",
+  "clip_to_base_alpha": true,
+  "max_size_mb": 2.5,
+  "layers": [
+    { "id": "pipeline", "enter": { "start": 0.2, "end": 1.2, "from": [-44, 0] }, "exit": { "start": 5.35, "end": 5.95, "to": [0, 0] } },
+    { "id": "evidence-frame", "enter": { "start": 0.8, "end": 1.6, "from": [46, 28] }, "exit": { "start": 5.35, "end": 5.95, "to": [0, 0] } },
+    { "id": "status-chips", "enter": { "start": 2.2, "end": 2.9, "from": [0, 18] }, "exit": { "start": 5.35, "end": 5.95, "to": [0, 0] } }
+  ],
+  "reveals": [
+    { "id": "shot", "axis": "y", "start": 1.2, "end": 2.1, "exit": { "start": 5.35, "end": 5.95 } }
+  ]
+}

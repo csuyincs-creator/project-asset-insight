@@ -1,4 +1,15 @@
-# project-asset-insight
+<p align="center">
+  <img src="./assets/readme/hero.gif" width="100%" alt="项目资产解读器——TODO-00 到 TODO-10 工作流逐节点点亮，浏览器窗口内的项目界面自上而下截图，生成 01-overview.png 并标记 CAPTURED / L2 VERIFIED / REVIEWED。">
+</p>
+
+<h1 align="center">project-asset-insight · 项目资产解读器</h1>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/version-v1.1.0-4cc38a.svg" alt="v1.1.0">
+  <img src="https://img.shields.io/badge/%E4%BE%9D%E8%B5%96-%E6%A0%87%E5%87%86%E5%BA%93-4cc38a.svg" alt="stdlib only">
+  <img src="https://img.shields.io/badge/%E8%AF%81%E6%8D%AE-%E5%BC%BA%E5%88%B6%E6%88%AA%E5%9B%BE-e0a458.svg" alt="mandatory screenshot">
+  <a href="#license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+</p>
 
 > **项目资产解读器** — 给项目写一份“未来自己还能读懂，而且一眼能想起它长什么样”的快速重入指南。
 
@@ -17,6 +28,36 @@
 - 如果有 UI / Web / GUI / Demo，它真实运行后长什么样
 
 默认不修改目标项目源码。
+
+## 工作流
+
+```text
+TODO-00  本机配置：报告目录 + 截图目录 + scale
+    ↓
+TODO-01  项目身份确认
+    ↓
+TODO-02  建立项目地图
+    ↓
+TODO-03  核心能力提炼
+    ↓
+TODO-04  核心架构理解
+    ↓
+TODO-05  借鉴价值分析
+    ↓
+TODO-06  可复用资产分类
+    ↓
+TODO-07  未来使用映射
+    ↓
+TODO-08  15 分钟阅读路线
+    ↓
+TODO-09  强制视觉运行、截图与校验
+    ├── 09A 视觉界面探测
+    ├── 09B 运行与截图
+    ├── 09C 机器级校验
+    └── 09D 视觉语义复核（能力存在时）
+    ↓
+TODO-10  报告生成 + 双 validator
+```
 
 ## v1.1.0 的核心变化
 
@@ -85,36 +126,6 @@ Agent 不一定有视觉能力。
 ```
 
 如果项目只有一个主要页面，1 张截图即可；多页面项目通常保留 2～4 张，不为了数量硬凑。
-
-## 工作流
-
-```text
-TODO-00  本机配置：报告目录 + 截图目录 + scale
-    ↓
-TODO-01  项目身份确认
-    ↓
-TODO-02  建立项目地图
-    ↓
-TODO-03  核心能力提炼
-    ↓
-TODO-04  核心架构理解
-    ↓
-TODO-05  借鉴价值分析
-    ↓
-TODO-06  可复用资产分类
-    ↓
-TODO-07  未来使用映射
-    ↓
-TODO-08  15 分钟阅读路线
-    ↓
-TODO-09  强制视觉运行、截图与校验
-    ├── 09A 视觉界面探测
-    ├── 09B 运行与截图
-    ├── 09C 机器级校验
-    └── 09D 视觉语义复核（能力存在时）
-    ↓
-TODO-10  报告生成 + 双 validator
-```
 
 ## 视觉证据状态
 
